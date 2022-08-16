@@ -16,7 +16,6 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int tileSize = originalTileSize * scale; //48x48 tile
 	
 	//how many tiles can be displayed on the screen
-	//4x3 ratio
 	public final int maxScreenCol = 16;
 	public final int maxScreenRow = 10;
 	
@@ -24,19 +23,28 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int screenHeight = tileSize * maxScreenRow; //480 pixels
 	
 	//world settings
-	public final int maxWorldCol = 50;
-	public final int maxWorldRow = 50;
+	public final int maxWorldCol = 100;
+	public final int maxWorldRow = 100;
 	public final int worldWidth = tileSize * maxWorldCol;
 	public final int worldHeight = tileSize * maxWorldRow;
 
 	int FPS = 60;
 	
+	//system settings
 	TileManager tileManager = new TileManager(this);
-	
-	KeyInput keyHandler = new KeyInput();
+	public Collision cCheck = new Collision(this);
+	KeyInput keyHandler = new KeyInput(this);
+	public HUD hud = new HUD(this);
 	Thread gameThread;
 	
 	public Player player = new Player(this, keyHandler);
+	
+	//game state
+	public int gameState;
+	public final int play = 1;
+	public final int pause = 2;
+	public final int title = 0;
+	
 
 	//constructor
 	public GamePanel() {
@@ -57,6 +65,8 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	public void start() {
+		gameState = title;
+		
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
@@ -96,8 +106,12 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	public void update() {
-
-		player.update();
+		
+		if (gameState == play) {
+			player.update();
+		} else if (gameState == pause) {
+			
+		}
 
 	}
 
@@ -107,11 +121,19 @@ public class GamePanel extends JPanel implements Runnable {
 
 		Graphics2D g2d = (Graphics2D) g;
 		
-		tileManager.draw(g2d);
+		//Title screen
+		if (gameState == title) {
+			hud.draw(g2d);
+		} else {
+			tileManager.draw(g2d);
 
-		player.draw(g2d);
+			player.draw(g2d);
+			
+			hud.draw(g2d);
 
-		//releases any system resources held by this graphics context.
-		g2d.dispose();
+			//releases any system resources held by this graphics context.
+			g2d.dispose();
+		}
+		
 	}
 }

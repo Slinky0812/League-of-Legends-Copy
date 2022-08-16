@@ -24,6 +24,9 @@ public class Player extends Entity {
 		screenX = (gp.screenWidth / 2) - (gp.tileSize / 2); 
 		screenY = (gp.screenHeight / 2) - (gp.tileSize / 2);
 		
+		//area for collision detection < player area
+		solidArea = new Rectangle(8, 16, 32, 32);
+		
 		setDefaultValues();
 		getPlayerImage();
 		
@@ -32,52 +35,83 @@ public class Player extends Entity {
 	}
 	
 	public void setDefaultValues() {
-		worldX = gp.tileSize * 1;
-		worldY = gp.tileSize * 1;
+		worldX = gp.tileSize * 50;
+		worldY = gp.tileSize * 50;
 		speed = 5;
 	}
 	
 	public void getPlayerImage() {
+		
+		//player up images
+		up1 = setUp("up1");
+		up2 = setUp("up2");
+		
+		//player down images
+		down1 = setUp("down1");
+		down2 = setUp("down2");
+		
+		//player left images
+		left1 = setUp("left1");
+		left2 = setUp("left2");
+		
+		//player right images
+		right1 = setUp("right1");
+		right2 = setUp("right2");
+		
+	}
+	
+	public BufferedImage setUp(String name) {
+		Utility utility = new Utility();
+		
+		BufferedImage image = null;
 		try {
-			
-			//images for player moving up
-			up1 = ImageIO.read(getClass().getResourceAsStream("/player/up1.png"));
-			up2 = ImageIO.read(getClass().getResourceAsStream("/player/up2.png"));
-
-			//images for player moving down
-			down1 = ImageIO.read(getClass().getResourceAsStream("/player/down1.png"));
-			down2 = ImageIO.read(getClass().getResourceAsStream("/player/down2.png"));
-			
-			//images for player moving left
-			left1 = ImageIO.read(getClass().getResourceAsStream("/player/left1.png"));
-			left2 = ImageIO.read(getClass().getResourceAsStream("/player/left2.png"));
-			
-			//images for player moving right
-			right1 = ImageIO.read(getClass().getResourceAsStream("/player/right1.png"));
-			right2 = ImageIO.read(getClass().getResourceAsStream("/player/right2.png"));
-			
-		} catch (IOException e){
+			image = ImageIO.read(getClass().getResourceAsStream("/player/" + name + ".png"));
+			image = utility.scaleImage(image, gp.tileSize, gp.tileSize); 
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		return image;
 	}
+	
 	
 	public void update() {
 		//move the player
 
 		if (keyHandler.up == true || keyHandler.down == true || keyHandler.left == true || keyHandler.right == true) {
 
+			//checking direction of player
 			if (keyHandler.up == true) {
-				direction = "up";
-				worldY -= speed;
+				direction = "up";	
 			} else if (keyHandler.down == true) {
 				direction = "down";
-				worldY += speed;
 			} else if (keyHandler.left == true) {
 				direction = "left";
-				worldX -= speed;
 			} else if (keyHandler.right == true) {
 				direction = "right";
-				worldX += speed;
+			}
+			
+			//check collision
+			collisionOn = false;
+			gp.cCheck.checkTile(this);
+			
+			//if collision is false, player can move
+			if (collisionOn == false) {
+
+				switch (direction) {
+				case "up":
+					worldY -= speed;
+					break;
+				case "down":
+					worldY += speed;
+					break;
+				case "left":
+					worldX -= speed;
+					break;
+				case "right":
+					worldX  += speed;
+					break;
+				}
 			}
 	
 			spriteCounter += 1;
@@ -129,7 +163,28 @@ public class Player extends Entity {
 			break;
 		}
 		
-		g2d.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		
+		int x = screenX;
+		int y = screenY;
+		
+		if (screenX > worldX) {
+			x = worldX;
+		}
+		if (screenY > worldY) {
+			y = worldY;
+		}
+		
+		int rightOffset = gp.screenWidth - screenX;
+		if (rightOffset > gp.worldWidth - worldX) {
+			x = gp.screenWidth - (gp.worldWidth - worldX);
+		}
+		
+		int bottomOffset = gp.screenHeight - screenY;
+		if (bottomOffset > gp.worldHeight - worldY) {
+			y = gp.screenHeight - (gp.worldHeight - worldY);
+		}		
+		
+		g2d.drawImage(image, x, y, null);
 		
 	}
 

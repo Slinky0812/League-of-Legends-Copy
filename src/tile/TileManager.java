@@ -101,32 +101,21 @@ public class TileManager {
 		//stone-grass tile
 		setUp(17, "stone-grass", false);
 		
+		
+		//water boundary tiles
 		setUp(18, "water_bounds_1", false);
-		
 		setUp(19, "water_bounds_2", false);
-		
 		setUp(20, "water_corner_1", false);
-		
 		setUp(21, "water_corner_2", false);
-		
 		setUp(22, "sand_water", false);
-		
 		setUp(23, "sand_grass_water", false);
-		
 		setUp(24, "sand_grass_water_2", false);
-		
 		setUp(25, "sand_water_corner", false);
-		
 		setUp(26, "sand_water_corner_2", false);
-		
 		setUp(27, "sand_grass_water_3", false);
-		
 		setUp(28, "sand_grass_water_4", false);
-		
 		setUp(29, "sand_water_2", false);
-		
 		setUp(30, "sand_water_corner_3", false);
-		
 		setUp(31, "sand_water_corner_4", false);
 		
 		setUp(32, "sand_corner_1", false);
@@ -143,7 +132,7 @@ public class TileManager {
 		
 	}
 	
-	public void setUp (int index, String name, boolean collision) {
+	public void setUp(int index, String name, boolean collision) {
 		
 		Utility utility = new Utility();
 		

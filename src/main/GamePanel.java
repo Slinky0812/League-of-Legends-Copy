@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import entity.*;
 import tile.*;
+import object.*;
 
 //will work as a game screen
 public class GamePanel extends JPanel implements Runnable {
@@ -12,15 +13,15 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	//screen settings
 	public final int originalTileSize = 16; //16 by 16 tile for characters, map tiles, etc.
-	public final int scale = 3; //scaling the tiles to look bigger on our screen
-	public final int tileSize = originalTileSize * scale; //48x48 tile
+	public final int scale = 4; //scaling the tiles to look bigger on our screen
+	public final int tileSize = originalTileSize * scale; //64x64 tile
 	
 	//how many tiles can be displayed on the screen
 	public final int maxScreenCol = 16;
 	public final int maxScreenRow = 10;
 	
-	public final int screenWidth = tileSize * maxScreenCol; //760 pixels
-	public final int screenHeight = tileSize * maxScreenRow; //480 pixels
+	public final int screenWidth = tileSize * maxScreenCol; //1024 pixels
+	public final int screenHeight = tileSize * maxScreenRow; //640 pixels
 	
 	//world settings
 	public final int maxWorldCol = 100;
@@ -33,11 +34,13 @@ public class GamePanel extends JPanel implements Runnable {
 	//system settings
 	TileManager tileManager = new TileManager(this);
 	public Collision cCheck = new Collision(this);
+	public Handler handler = new Handler(this);
 	KeyInput keyHandler = new KeyInput(this);
 	public HUD hud = new HUD(this);
 	Thread gameThread;
 	
 	public Player player = new Player(this, keyHandler);
+	public GameObject object[] = new GameObject[30];
 	
 	//game state
 	public int gameState;
@@ -62,6 +65,10 @@ public class GamePanel extends JPanel implements Runnable {
 
 		//the game is "focused" to receive keyboard input
 		this.setFocusable(true);
+	}
+	
+	public void setUp() {
+		handler.setObject();
 	}
 
 	public void start() {
@@ -125,10 +132,20 @@ public class GamePanel extends JPanel implements Runnable {
 		if (gameState == title) {
 			hud.draw(g2d);
 		} else {
+			//tiles
 			tileManager.draw(g2d);
 
+			//object
+			for (int i = 0; i < object.length; i++) {
+				if (object[i] != null) {
+					object[i].draw(g2d, this);
+				}
+			}
+			
+			//player
 			player.draw(g2d);
 			
+			//hud
 			hud.draw(g2d);
 
 			//releases any system resources held by this graphics context.

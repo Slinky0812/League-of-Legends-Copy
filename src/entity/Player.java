@@ -14,6 +14,7 @@ public class Player extends Entity {
 	//where we draw player on the screen (centre)
 	public final int screenX;
 	public final int screenY;
+	int count = 0;
 	
 	public Player (GamePanel gp, KeyInput keyHandler) {
 		
@@ -25,7 +26,13 @@ public class Player extends Entity {
 		screenY = (gp.screenHeight / 2) - (gp.tileSize / 2);
 		
 		//area for collision detection < player area
-		solidArea = new Rectangle(8, 16, 32, 32);
+		solidArea = new Rectangle();
+		solidArea.x = 8;
+		solidArea.y = 16;
+		solidAreaDefaultX = solidArea.x;
+		solidAreaDefaultY = solidArea.y;
+		solidArea.width = 32;
+		solidArea.height = 32;
 		
 		setDefaultValues();
 		getPlayerImage();
@@ -35,9 +42,11 @@ public class Player extends Entity {
 	}
 	
 	public void setDefaultValues() {
-		worldX = gp.tileSize * 50;
-		worldY = gp.tileSize * 50;
-		speed = 5;
+		worldX = gp.tileSize * 5;
+		worldY = gp.tileSize * 95;
+		speed = 10;
+		health = 100;
+		mana = 100;
 	}
 	
 	public void getPlayerImage() {
@@ -93,7 +102,10 @@ public class Player extends Entity {
 			
 			//check collision
 			collisionOn = false;
+			//collision on tile
 			gp.cCheck.checkTile(this);
+			//collision on object
+			gp.cCheck.checkObject(this, true);
 			
 			//if collision is false, player can move
 			if (collisionOn == false) {
@@ -124,6 +136,12 @@ public class Player extends Entity {
 				spriteCounter = 0;
 			}
 			
+		} else {
+			count++;
+			if (count == 20) {
+				spriteNum = 1;
+				count = 0;
+			}
 		}
 	}
 	

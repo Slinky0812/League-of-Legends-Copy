@@ -18,7 +18,6 @@ public class Main{
 
 		GamePanel gamePanel = new GamePanel();
 		window.add(gamePanel);
-		gamePanel.start();
 
 		//causes the window to be sized to fit the preferred size and layouts of its subcomponents.
 		window.pack();
@@ -28,5 +27,8 @@ public class Main{
 		
 		//We can see the window when the game is running
 		window.setVisible(true);
+		
+		gamePanel.setUp();
+		gamePanel.start();
 	}
 }
